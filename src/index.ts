@@ -2,6 +2,8 @@ import Fastify from "fastify"
 
 import RoutesGenImagicon from "./Routes/genImagicon.js"
 
+const PORT = process.env.PORT || 5000
+
 const app = Fastify({
   logger: {
     prettyPrint:
@@ -16,7 +18,7 @@ const app = Fastify({
 
 app.register(RoutesGenImagicon)
 
-app.listen(5000, function (err, _address) {
+app.listen(PORT, function (err, _address) {
   if (err) {
     app.log.error(err)
     process.exit(1)
