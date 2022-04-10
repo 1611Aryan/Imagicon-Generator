@@ -18,7 +18,7 @@ const app = Fastify({
 
 app.register(RoutesGenImagicon)
 
-app.listen(PORT, function (err, _address) {
+app.listen(PORT, process.env.HOST || "0.0.0.0", function (err, _address) {
   if (err) {
     app.log.error(err)
     process.exit(1)
