@@ -1,4 +1,5 @@
 import Fastify from "fastify"
+import compress from "fastify-compress"
 
 import RoutesGenImagicon from "./Routes/genImagicon.js"
 
@@ -15,6 +16,8 @@ const app = Fastify({
         : false,
   },
 })
+
+app.register(compress, { inflateIfDeflated: true })
 
 app.register(RoutesGenImagicon)
 
