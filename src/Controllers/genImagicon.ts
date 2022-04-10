@@ -9,6 +9,8 @@ type Req = FastifyRequest<{
   }
 }>
 
+const memoizedData: { [key: string]: Buffer } = {}
+
 const hashString = (string: string) =>
   crypto.createHash("md5").update(string).digest("hex")
 
@@ -67,9 +69,18 @@ const genGrid = (
 }
 
 export const genImagiconController = async (req: Req, res: FastifyReply) => {
-  const hashedString = hashString(req.params.string)
+  const string = req.params.string
+  if (memoizedData[req.params.string])
+    return res
+      .headers({ "Content-Type": "image/png" })
+      .send(memoizedData[string])
 
-  res
+  const hashedString = hashString(string)
+  const image = genImage(hashedString)
+
+  memoizedData[string] = image
+
+  return res
     .headers({ "Content-Type": "image/png", "accept-ranges": "bytes" })
     .send(genImage(hashedString))
 }
