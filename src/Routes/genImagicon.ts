@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyRequest, FastifyServerOptions } from "fastify"
+import { FastifyInstance, FastifyRequest } from "fastify"
 import { genImagiconController } from "../Controllers/genImagicon.js"
 
 type Req = FastifyRequest<{
@@ -8,10 +8,8 @@ type Req = FastifyRequest<{
 }>
 
 const genImagicon = async (app: FastifyInstance) => {
-  app.get("/", (_req, res) => {
-    res.send({ data: "Hello" })
-  })
-  app.get("/genImagicon/:string", genImagiconController)
+
+  app.get("/", genImagiconController)
 }
 
 export default genImagicon

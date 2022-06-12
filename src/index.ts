@@ -1,23 +1,23 @@
 import Fastify from "fastify"
-import compress from "fastify-compress"
+
 
 import RoutesGenImagicon from "./Routes/genImagicon.js"
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5001
 
 const app = Fastify({
   logger: {
     prettyPrint:
       process.env.NODE_ENV === "development"
         ? {
-            translateTime: "HH:MM:ss Z",
-            ignore: "pid,hostname",
-          }
+          translateTime: "HH:MM:ss Z",
+          ignore: "pid,hostname",
+        }
         : false,
   },
 })
 
-app.register(compress, { inflateIfDeflated: true })
+
 
 app.register(RoutesGenImagicon)
 

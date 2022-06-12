@@ -1,0 +1,2 @@
+#GET
+http://localhost:5001/?size=500&seed=aryan

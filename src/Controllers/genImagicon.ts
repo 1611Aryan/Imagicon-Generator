@@ -1,13 +1,9 @@
-import { FastifyReply, FastifyRequest } from "fastify"
-import crypto from "crypto"
 import canvas from "canvas"
+import crypto from "crypto"
+import { FastifyReply, FastifyRequest } from "fastify"
 const { createCanvas } = canvas
 
-type Req = FastifyRequest<{
-  Params: {
-    string: string
-  }
-}>
+
 
 const memoizedData: { [key: string]: Buffer } = {}
 
@@ -34,9 +30,9 @@ const genColor = (string: string): string => {
   return rgb === "rgb(0,0,0)" ? genColor(string) : rgb
 }
 
-const genImage = (string: string) => {
-  const width = 800,
-    height = 800
+const genImage = (size: number, string: string) => {
+  const width = size,
+    height = size
   const canvas = createCanvas(width, height)
   const ctx = canvas.getContext("2d")
   ctx.fillStyle = "#fff"
@@ -68,19 +64,27 @@ const genGrid = (
     }
 }
 
-export const genImagiconController = async (req: Req, res: FastifyReply) => {
-  const string = req.params.string
-  if (memoizedData[req.params.string])
+export const genImagiconController = async (req: FastifyRequest<{
+  Querystring: {
+    size: number,
+    seed: string
+  }
+}>, res: FastifyReply) => {
+  const size = Math.min(req.query.size as number || 200, 1080)
+  const seed = req.query.seed
+  console.log({ memoizedData })
+
+  if (memoizedData[seed])
     return res
       .headers({ "Content-Type": "image/png" })
-      .send(memoizedData[string])
+      .send(memoizedData[seed])
 
-  const hashedString = hashString(string)
-  const image = genImage(hashedString)
+  const hashedString = hashString(seed)
+  const image = genImage(size, hashedString)
 
-  memoizedData[string] = image
+  memoizedData[seed] = image
 
   return res
     .headers({ "Content-Type": "image/png", "accept-ranges": "bytes" })
-    .send(genImage(hashedString))
+    .send(image)
 }
