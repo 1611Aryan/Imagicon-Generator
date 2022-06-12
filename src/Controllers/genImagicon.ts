@@ -72,17 +72,17 @@ export const genImagiconController = async (req: FastifyRequest<{
 }>, res: FastifyReply) => {
   const size = Math.min(req.query.size as number || 200, 1080)
   const seed = req.query.seed
-  console.log({ memoizedData })
 
-  if (memoizedData[seed])
+
+  if (memoizedData[seed + size])
     return res
       .headers({ "Content-Type": "image/png" })
-      .send(memoizedData[seed])
+      .send(memoizedData[seed + size])
 
   const hashedString = hashString(seed)
   const image = genImage(size, hashedString)
 
-  memoizedData[seed] = image
+  memoizedData[seed + size] = image
 
   return res
     .headers({ "Content-Type": "image/png", "accept-ranges": "bytes" })
